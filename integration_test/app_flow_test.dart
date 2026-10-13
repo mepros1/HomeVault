@@ -18,6 +18,7 @@ import 'package:homevault/data/api/analyze_room_client.dart';
 import 'package:homevault/data/auth/credential_store.dart';
 import 'package:homevault/data/auth/device_auth_client.dart';
 import 'package:homevault/data/auth/session.dart';
+import 'package:homevault/data/backup/report_backup_client.dart';
 import 'package:homevault/data/db/database.dart';
 import 'package:homevault/data/entitlement.dart';
 import 'package:homevault/data/providers.dart';
@@ -164,6 +165,16 @@ void main() {
             endpoint: server.uri('/v1/stats/review'),
             accessToken: ref.watch(sessionProvider.notifier).accessToken,
           )),
+      reportBackupClientProvider.overrideWith((ref) {
+        final session = ref.watch(sessionProvider.notifier);
+        final client = ReportBackupClient(
+          baseEndpoint: server.uri('/v1/backups'),
+          accessToken: session.accessToken,
+          refreshAccessToken: session.reissueToken,
+        );
+        ref.onDispose(client.close);
+        return client;
+      }),
     ]);
   });
 
