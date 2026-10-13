@@ -133,7 +133,8 @@ Future<void> waitFor(bool Function() condition, {Duration timeout = const Durati
 }
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  const capturePortfolio = bool.fromEnvironment('PORTFOLIO_SCREENSHOTS');
 
   late FakeServer server;
   late AppDatabase db;
@@ -175,6 +176,10 @@ void main() {
   testWidgets('onboarding, photos, analysis, review and report end to end', (tester) async {
     await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const HomeVaultApp()));
     await settle(tester);
+    if (capturePortfolio) {
+      await binding.convertFlutterSurfaceToImage();
+      await tester.pump();
+    }
 
     // Onboarding.
     await tester.enterText(find.byType(TextFormField).first, 'Test flat');
@@ -209,11 +214,16 @@ void main() {
     expect(server.analyses, 1);
     expect(server.lastIdempotencyKey, hasLength(64));
     expect(find.text('3 items recognised'), findsOneWidget);
+    if (capturePortfolio) {
+      await settle(tester);
+      await binding.takeScreenshot('01_room_analysis');
+    }
 
     // Review: most expensive first, the low-confidence kettle needs Confirm.
     await tester.tap(find.text('Review items'));
     await settle(tester);
     expect(find.text('Refrigerator'), findsOneWidget);
+    if (capturePortfolio) await binding.takeScreenshot('02_item_review');
     for (var i = 0; i < 3; i++) {
       final accept = find.widgetWithText(FilledButton, 'Accept');
       final confirm = find.widgetWithText(FilledButton, 'Confirm');
@@ -238,5 +248,11 @@ void main() {
     expect(await pdf.exists(), isTrue);
     expect(await pdf.length(), greaterThan(10 * 1024));
     expect(report.itemCount, 3);
+    if (capturePortfolio) {
+      await settle(tester);
+      await binding.takeScreenshot('03_report_summary');
+      binding.responseData ??= <String, dynamic>{};
+      binding.responseData!['portfolio_pdf'] = base64Encode(await pdf.readAsBytes());
+    }
   });
 }

@@ -65,6 +65,7 @@ supabase/.branches/
 /server/.env
 
 # Developer machine artifacts and credentials
+/artifacts/
 **/.gradle/
 **/.kotlin/
 **/.cxx/
