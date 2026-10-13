@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: homevault-server
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/homevault}
+    username: ${DATABASE_USER:homevault}
+    password: ${DATABASE_PASSWORD:homevault}
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      # Report backups up to 8 MB; analysis images are checked per file (400 KB).
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+homevault:
+  auth:
+    # device  — the server issues long-lived tokens to anonymous devices (v1 default)
+    # supabase — verify Supabase Auth JWTs against the project's JWKS
+    mode: ${AUTH_MODE:device}
+    # HS256 secret, at least 32 bytes. Required in device mode.
+    secret: ${AUTH_SECRET:}
+    issuer: ${AUTH_ISSUER:homevault}
+    token-ttl: ${AUTH_TOKEN_TTL:365d}
+    # Supabase mode: https://<ref>.supabase.co/auth/v1/.well-known/jwks.json
+    jwk-set-uri: ${AUTH_JWK_SET_URI:}
+  gemini:
+    # Must belong to a Google Cloud project with billing enabled (spec section 6).
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-3.1-flash-lite}
+    timeout: ${MODEL_TIMEOUT:40s}
+    # GEMINI_MOCK=true returns canned items without calling Google (dev only).
+    mock: ${GEMINI_MOCK:false}
+  quota:
+    free-per-month: ${QUOTA_FREE_PER_MONTH:3}
+    pro-per-month: ${QUOTA_PRO_PER_MONTH:300}
+    # Global cost fuse: analyses per UTC day across all users (0 = off).
+    daily-budget: ${DAILY_BUDGET:2000}
+  rate-limit:
+    devices-per-hour-per-ip: ${RATE_DEVICES_PER_HOUR:20}
+    analyze-per-hour-per-ip: ${RATE_ANALYZE_PER_HOUR:120}
+    # true only behind a proxy that sets X-Forwarded-For itself
+    trust-forwarded-for: ${TRUST_FORWARDED_FOR:false}
+  app-check:
+    # off | log | enforce. Start with log, switch to enforce once the Play
+    # build is on a track and the logs show clean verdicts.
+    mode: ${APP_CHECK_MODE:off}
+    package-name: ${APP_CHECK_PACKAGE:com.homevault.app}
+    # Service-account JSON (Play Integrity API enabled, linked to the Play app).
+    service-account-file: ${PLAY_INTEGRITY_SERVICE_ACCOUNT_FILE:}
+    max-token-age: ${APP_CHECK_MAX_TOKEN_AGE:10m}
+  backup:
+    max-per-user: ${BACKUP_MAX_PER_USER:20}
+    max-file-bytes: ${BACKUP_MAX_FILE_BYTES:8388608}
+    max-total-bytes: ${BACKUP_MAX_TOTAL_BYTES:104857600}
+    transfer-code-ttl: ${BACKUP_TRANSFER_CODE_TTL:15m}
+    retention: ${BACKUP_RETENTION:365d}
+  revenuecat:
+    # Value of the Authorization header RevenueCat sends (dashboard -> Integrations -> Webhooks).
+    webhook-secret: ${REVENUECAT_WEBHOOK_SECRET:}
+    entitlement-id: ${REVENUECAT_ENTITLEMENT_ID:pro}
+  cache-ttl: 24h
+  max-images: 8
+  max-image-bytes: 409600

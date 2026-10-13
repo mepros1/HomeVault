@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Debug builds only: allow plain http to the local dev server
+         (10.0.2.2 from the emulator, LAN IP from a phone). Release keeps
+         the platform default of https only. -->
+    <application android:usesCleartextTraffic="true" />
+</manifest>

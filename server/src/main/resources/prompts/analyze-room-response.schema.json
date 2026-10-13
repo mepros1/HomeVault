@@ -1,0 +1,46 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "items": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": { "type": "STRING" },
+          "category": {
+            "type": "STRING",
+            "enum": [
+              "Electronics", "Furniture", "Appliances", "Kitchenware",
+              "Clothing & Accessories", "Jewelry & Watches", "Art & Collectibles",
+              "Tools & Equipment", "Sports & Outdoor", "Musical Instruments",
+              "Books & Media", "Toys & Games", "Home Decor", "Bedding & Linens",
+              "Office & Stationery", "Other"
+            ]
+          },
+          "brand": { "type": "STRING", "nullable": true },
+          "model": { "type": "STRING", "nullable": true },
+          "serial": { "type": "STRING", "nullable": true },
+          "qty": { "type": "INTEGER" },
+          "condition": {
+            "type": "STRING",
+            "enum": ["new", "excellent", "good", "fair", "poor"],
+            "nullable": true
+          },
+          "est_low": { "type": "NUMBER" },
+          "est_high": { "type": "NUMBER" },
+          "confidence": { "type": "NUMBER" },
+          "source_image_index": { "type": "INTEGER" },
+          "note": { "type": "STRING", "nullable": true }
+        },
+        "required": [
+          "name", "category", "qty", "est_low", "est_high", "confidence", "source_image_index"
+        ],
+        "propertyOrdering": [
+          "name", "category", "brand", "model", "serial", "qty", "condition",
+          "est_low", "est_high", "confidence", "source_image_index", "note"
+        ]
+      }
+    }
+  },
+  "required": ["items"]
+}

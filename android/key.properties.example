@@ -1,0 +1,9 @@
+# Copy to android/key.properties (git-ignored). Generate the keystore once:
+#   keytool -genkeypair -v -keystore ~/homevault-release.jks -keyalg RSA \
+#     -keysize 2048 -validity 10000 -alias homevault
+# Keep the .jks and these passwords out of the repository and backed up:
+# losing them means losing the ability to update the app on Play.
+storeFile=C:/Users/you/homevault-release.jks
+storePassword=
+keyAlias=homevault
+keyPassword=

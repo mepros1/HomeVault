@@ -1,0 +1,7 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # `Foo({required AppDatabase db}) : _db = db` reads better at call sites
+    # than private initializing formals; keep the explicit form.
+    prefer_initializing_formals: false
