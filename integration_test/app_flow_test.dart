@@ -251,8 +251,8 @@ void main() {
     if (capturePortfolio) {
       await settle(tester);
       await binding.takeScreenshot('03_report_summary');
-      binding.responseData ??= <String, dynamic>{};
-      binding.responseData!['portfolio_pdf'] = base64Encode(await pdf.readAsBytes());
+      binding.reportData ??= <String, dynamic>{};
+      binding.reportData!['portfolio_pdf'] = base64Encode(await pdf.readAsBytes());
     }
   });
 }

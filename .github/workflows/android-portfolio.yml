@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/android-portfolio.yml'
       - 'test_driver/portfolio_driver.dart'
+        - 'integration_test/app_flow_test.dart'
 
 permissions:
   contents: read
